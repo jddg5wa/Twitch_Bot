@@ -18,7 +18,7 @@ def run():
 	joinRoom(s)
 	readbuffer = ""
 
-	users = ["gingerbreadybot"]
+	users = ["gingerbreadybot", "gingerbreadyman"]
 
 	while True:
 		readbuffer = readbuffer + s.recv(1024).decode()
