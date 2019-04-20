@@ -1,24 +1,17 @@
 import string
+import os
 from Read import getUser, getMessage
 from Socket import openSocket, sendMessage
 from Initialize import joinRoom
-from BotTalk import *
+from Settings import *
 
-# class Stream:
-# 	viewers = ()
-# 	oldViewers = ()
-
-# class Viewer:
-# 	joinDate = 0
-
-# 	def checkToWelcome():
+users = ["gingerbreadybot"]
 
 def run():
 	s = openSocket()
+	userListFile = open("userlist.txt", "w")
 	joinRoom(s)
 	readbuffer = ""
-
-	users = ["gingerbreadybot", "gingerbreadyman"]
 
 	while True:
 		readbuffer = readbuffer + s.recv(1024).decode()
@@ -26,7 +19,7 @@ def run():
 		readbuffer = temp.pop()
 		
 		for line in temp:
-			# print(line)
+			print(line)
 			if "PING" in line:
 				s.send((line.replace("PING", "PONG")+ "\r\n").encode("utf-8"))
 				break
@@ -35,12 +28,27 @@ def run():
 			message = getMessage(line)
 			print (user + " typed :" + message)
 
-			if user not in users:
-
-				welcomeNewUser(user)
+			#Greet New User
+			if isUserNew(user):
+				welcomeNewUser(s,user)
 				users.append(user)
-				print (users)
-			
-			reply(message, user)
+				userListFile.write(user + " ")
+				print(users)
+
+			# reply(message, user)
+
+def loadUserList():
+	users = [line.split(" ") for line in userListFiles.readLines()]
+	print(users)
+
+
+def isUserNew(user):
+	if (user not in users):
+		return True
+
+def welcomeNewUser(socket, user):
+    print ("greeted " + user)
+    sendMessage(socket, "@" + user + " " + welcomeMessage)
 
 run()
+
